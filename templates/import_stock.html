@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Import Stock</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-truck me-2"></i>Add New Import</h5>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- ✅ SCANNER SECTION -->
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <label class="form-label fw-bold">🔍 Scan Battery Barcode</label>
+                            <input type="text" class="form-control mb-2" id="barcodeInput" name="barcode" 
+                                   placeholder="Barcode scan hoga">
+
+                            <div class="d-flex gap-2 mb-3">
+                                <button type="button" id="startScanner" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-camera me-2"></i>📷 Camera ON
+                                </button>
+                                <button type="button" id="stopScanner" class="btn btn-danger w-100" style="display: none;">
+                                    <i class="fas fa-stop me-2"></i>Camera OFF
+                                </button>
+                            </div>
+
+                            <div id="permissionGuide" class="alert alert-warning text-center">
+                                <strong>⚠️ Permission:</strong><br>
+                                "Camera ON" click → "Allow" karo → Ready!
+                            </div>
+
+                            <div id="scannerContainer" style="height: 300px; border: 2px solid #ddd; border-radius: 8px; display: none;">
+                                <div id="scanner" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            
+                            <div id="scannerStatus" class="mt-2 text-center fw-bold"></div>
+                            <div id="errorMessage" class="alert alert-danger mt-2" style="display: none;"></div>
+                        </div>
+
+                        <!-- Battery Model -->
+                        <div class="mb-3">
+                            <label class="form-label">Battery Model</label>
+                            <select name="battery_id" class="form-select" required>
+                                <option value="">Select Battery</option>
+                                {% for battery in batteries %}
+                                <option value="{{ battery.id }}">
+                                    {{ battery.model }} (Current: {{ battery.quantity }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Supplier -->
+                        <div class="mb-3">
+                            <label class="form-label">Supplier</label>
+                            <select name="supplier_id" class="form-select" required>
+                                <option value="">Select Supplier</option>
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" name="quantity" class="form-control" required min="1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Purchase Price</label>
+                                <input type="number" name="purchase_price" class="form-control" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info w-100 btn-lg">
+                            <i class="fas fa-plus me-2"></i>+ Add Import
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ JAVASCRIPT -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+let scanner = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const startBtn = document.getElementById('startScanner');
+    const stopBtn = document.getElementById('stopScanner');
+    const barcodeInput = document.getElementById('barcodeInput');
+    const scannerContainer = document.getElementById('scannerContainer');
+    const permissionGuide = document.getElementById('permissionGuide');
+    const statusEl = document.getElementById('scannerStatus');
+    const errorEl = document.getElementById('errorMessage');
+
+    startBtn.onclick = startScanner;
+    stopBtn.onclick = stopScanner;
+
+    async function startScanner() {
+        try {
+            permissionGuide.style.display = 'none';
+            scannerContainer.style.display = 'block';
+            statusEl.textContent = 'Camera loading...';
+            hideError();
+
+            scanner = new Html5Qrcode("scanner");
+            
+            // Get cameras
+            const cameras = await Html5Qrcode.getCameras();
+            if (cameras.length === 0) throw new Error('No camera');
+
+            const config = { fps: 5, qrbox: {width: 250, height: 250} };
+
+            await scanner.start(cameras[0].id, config, onScanSuccess, onScanError);
+            
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+            statusEl.textContent = '✅ Ready to scan!';
+            statusEl.style.color = 'green';
+
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = '❌ Camera Error';
+            permissionGuide.innerHTML = 'Chrome Settings → Privacy → Camera → Allow';
+            scannerContainer.style.display = 'none';
+        }
+    }
+
+    function stopScanner() {
+        if (scanner) {
+            scanner.stop().then(() => {
+                scanner.clear();
+                startBtn.style.display = 'block';
+                stopBtn.style.display = 'none';
+                scannerContainer.style.display = 'none';
+                permissionGuide.style.display = 'block';
+            });
+        }
+    }
+
+    function onScanSuccess(decodedText) {
+        barcodeInput.value = decodedText;
+        statusEl.innerHTML = `🎉 <strong>Scanned: ${decodedText}</strong>`;
+        console.log('✅ Barcode:', decodedText);
+        stopScanner();
+    }
+
+    function onScanError() {}
+
+    function hideError() {
+        errorEl.style.display = 'none';
+    }
+});
+</script>
+
+<style>
+.is-valid { border-color: #28a745 !important; background: #d4edda !important; }
+</style>
+
+{% endblock %}  <!-- ✅ YEHI TAG MISSING THA! -->

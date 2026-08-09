@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Inventory Management</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+            <i class="fas fa-plus me-1"></i> Add Battery
+        </button>
+    </div>
+
+    <div class="table-container">
+        <div class="mb-3">
+            <form method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search by model, brand, or barcode..." value="{{ request.args.get('search', '') }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Brand</th>
+                    <th>Specs</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Barcode</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in batteries %}
+                <tr>
+                    <td>{{ b.model }}</td>
+                    <td><span class="badge bg-secondary">{{ b.brand }}</span></td>
+                    <td>{{ b.voltage }}V / {{ b.capacity }}Ah</td>
+                    <td class="text-success fw-bold">${{ b.price }}</td>
+                    <td>
+                        {% if b.quantity < 5 %}
+                            <span class="badge bg-danger">{{ b.quantity }}</span>
+                        {% else %}
+                            <span class="badge bg-success">{{ b.quantity }}</span>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ b.barcode }}</code></td>
+                    <td>
+                        <a href="{{ url_for('delete_battery', id=b.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this item?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add New Battery</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Battery Model</label>
+                        <input type="text" name="model" class="form-control" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Brand</label>
+                            <input type="text" name="brand" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price ($)</label>
+                            <input type="number" name="price" class="form-control" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4
+                        <div class="col-md-4 mb-3">
+    <label class="form-label">Voltage</label>
+    <input type="text" name="voltage" class="form-control" required>
+</div>
+
+<div class="col-md-4 mb-3">
+    <label class="form-label">Capacity</label>
+    <input type="text" name="capacity" class="form-control" required>
+</div>
+
+<div class="col-md-4 mb-3">
+    <label class="form-label">Quantity</label>
+    <input type="number" name="quantity" class="form-control" required>
+</div>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Barcode</label>
+    <input type="text" name="barcode" class="form-control" required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Supplier</label>
+    <select name="supplier_id" class="form-control">
+        <option value="">Select Supplier</option>
+        {% for s in suppliers %}
+        <option value="{{ s.id }}">{{ s.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Save Battery</button>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

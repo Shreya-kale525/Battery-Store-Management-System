@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Dashboard Overview</h2>
+
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <h3>{{ total_stock }}</h3>
+                <p>Total Stock</p>
+                <i class="fas fa-box fa-2x text-primary"></i>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <h3>${{ total_sales }}</h3>
+                <p>Total Sales</p>
+                <i class="fas fa-shopping-cart fa-2x text-success"></i>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <h3>{{ low_stock|length }}</h3>
+                <p>Low Stock Alert</p>
+                <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <h3>{{ top_selling|length }}</h3>
+                <p>Top Models</p>
+                <i class="fas fa-star fa-2x text-warning"></i>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- Charts -->
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <div class="chart-container">
+
+                <h5>Sales Analytics</h5>
+
+                <canvas id="salesChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="chart-container">
+
+                <h5>Top Selling Models</h5>
+
+
+                <ul class="list-group">
+
+                {% for battery,total_sold in top_selling %}
+
+                    <li class="list-group-item">
+                        {{ battery.model }}
+
+                        <span class="badge bg-primary">
+                            {{ total_sold }}
+                        </span>
+
+                    </li>
+
+                {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ============================= -->
+<!-- Floating App Menu -->
+<!-- ============================= -->
+
+
+<div class="app-menu">
+
+
+    <button class="menu-btn" onclick="toggleMenu()">
+
+        <i class="fas fa-th"></i>
+
+    </button>
+
+
+
+    <div id="menuItems" class="menu-items">
+
+
+        <a href="{{ url_for('dashboard') }}">
+
+            <i class="fas fa-home"></i>
+            Dashboard
+
+        </a>
+
+
+
+        <a href="{{ url_for('inventory') }}">
+
+            <i class="fas fa-box"></i>
+            Inventory
+
+        </a>
+
+
+
+        <a href="{{ url_for('sales') }}">
+
+            <i class="fas fa-shopping-cart"></i>
+            Sales
+
+        </a>
+
+
+
+        <a href="{{ url_for('import_stock') }}">
+
+            <i class="fas fa-file-import"></i>
+            Import
+
+        </a>
+
+
+
+        <a href="{{ url_for('reports') }}">
+
+            <i class="fas fa-chart-line"></i>
+            Reports
+
+        </a>
+
+
+
+        <a href="{{ url_for('analysis') }}">
+
+            <i class="fas fa-chart-bar"></i>
+            Analysis
+
+        </a>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- Menu Script -->
+
+<script>
+
+function toggleMenu(){
+
+    let menu = document.getElementById("menuItems");
+
+
+    if(menu.style.display === "block"){
+
+        menu.style.display = "none";
+
+    }
+    else{
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+
+{% endblock %}

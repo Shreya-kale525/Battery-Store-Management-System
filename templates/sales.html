@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Sales & Scanner</h2>
+    
+    <div class="row">
+        <!-- Scanner Section -->
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-camera me-2"></i>Barcode Scanner</h5>
+                </div>
+                <div class="card-body">
+                    <div id="reader" style="width: 100%;"></div>
+                    <div class="mt-3">
+                        <input type="text" id="barcodeInput" class="form-control" placeholder="Or enter barcode manually">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Section -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Current Cart</h5>
+                </div>
+                <div class="card-body">
+                    {% if cart %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                            <tr>
+                                <td>{{ item.model }}</td>
+                                <td>${{ item.price }}</td>
+                                <td>{{ item.qty }}</td>
+                                <td>${{ item.price * item.qty }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" onclick="removeItem({{ item.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted text-center">Cart is empty. Scan a barcode to add items.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Section -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Checkout</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('process_sale') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Customer</label>
+                            <select name="customer_id" class="form-select">
+                                <option value="">Walk-in Customer</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.id }}">{{ customer.name }} - {{ customer.phone }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total Amount</label>
+                            <input type="text" class="form-control" id="totalAmount" readonly value="$0.00">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 py-2">
+                            <i class="fas fa-check-circle me-2"></i> Complete Sale
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update total
+    function updateTotal() {
+        let total = 0;
+        {% for item in cart %}
+        total += {{ item.price }} * {{ item.qty }};
+        {% endfor %}
+        document.getElementById('totalAmount').value = '$' + total.toFixed(2);
+    }
+    updateTotal();
+
+    function removeItem(id) {
+        // Reload page to remove item (simple approach)
+        location.reload();
+    }
+</script>
+{% endblock %}

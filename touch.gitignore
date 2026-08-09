@@ -1,0 +1,142 @@
+# ============================================
+# Python & Flask
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+env.bak/
+venv.bak/
+
+# ============================================
+# Database Files (SQLite)
+# ============================================
+instance/
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ============================================
+# Environment Variables
+# ============================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ============================================
+# IDE & Editor Files
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ============================================
+# OS Generated Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ============================================
+# Uploads & Generated Files
+# ============================================
+static/uploads/*.png
+static/uploads/*.jpg
+static/uploads/*.jpeg
+static/uploads/*.gif
+static/uploads/*.svg
+!static/uploads/.gitkeep
+
+# ============================================
+# Logs & Debug Files
+# ============================================
+*.log
+logs/
+debug.log
+error.log
+
+# ============================================
+# Flask Specific
+# ============================================
+instance/
+*.log
+*.sqlite3
+
+# ============================================
+# Jupyter Notebook
+# ============================================
+.ipynb_checkpoints/
+
+# ============================================
+# Coverage & Testing
+# ============================================
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ============================================
+# Build & Distribution
+# ============================================
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# ============================================
+# Security
+# ============================================
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# ============================================
+# Documentation
+# ============================================
+docs/_build/
+*.pdf
+*.html
+
+# ============================================
+# Keep uploads folder but ignore files
+# ============================================
+static/uploads/.gitkeep

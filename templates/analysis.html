@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Sales Analysis</h2>
+
+    <!-- Stats -->
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3 class="text-primary">₹{{ total_sales }}</h3>
+                <p>Total Sales</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3 class="text-success">₹{{ total_profit }}</h3>
+                <p>Total Profit</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3 class="text-warning">{{ total_products }}</h3>
+                <p>Total Products Sold</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Top Products -->
+    <div class="card shadow">
+        <div class="card-header">
+            <h5>Top Selling Products</h5>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for product in top_products %}
+                    <tr>
+                        <td>{{ product.model }}</td>
+                        <td>{{ product.qty_sold }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
